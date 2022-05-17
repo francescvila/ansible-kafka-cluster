@@ -1,0 +1,43 @@
+version: '3.0'
+
+services:
+
+  kafka:
+    container_name: kafka
+    image: wurstmeister/kafka:${KAFKA_DOCKER_TAG}
+    # depends_on:
+    # - zookeeper
+    environment:
+      KAFKA_BROKER_ID: {{ node }}
+      KAFKA_ADVERTISED_HOST_NAME: {{ ansible_ssh_host }}
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_CREATE_TOPICS: topic1:1:1,topic2:2:1
+      KAFKA_DELETE_RETENTION_MS: 1000
+      KAFKA_GROUP_MAX_SESSION_TIMEOUT_MS: 60000
+      KAFKA_LOG_RETENTION_HOURS: 48
+      KAFKA_MESSAGE_MAX_BYTES: 10000000
+      KAFKA_REPLICA_FETCH_MAX_BYTES: 10000000
+      KAFKA_ZOOKEEPER_CONNECT: "{{ hostvars['kafka1'].ansible_host }}:2181,{{ hostvars['kafka2'].ansible_host }}:2181,{{ hostvars['kafka3'].ansible_host }}:2181"
+      KAFKA_HEAP_OPTS: '-Xms1g -Xmx1g'
+      KAFKA_JMX_HOSTNAME: 127.0.0.1
+      KAFKA_JMX_PORT: 9999
+      #:KAFKA_JMX_OPTS: '-Djava.rmi.server.hostname=127.0.0.1 -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.port=10030 -Dcom.sun.management.jmxremote.rmi.port=10031 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false'
+      #KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+    volumes:
+    - "{{ data_path }}/kafka:/kafka:rw"
+    ports:
+    - "9092:9092/tcp"
+    - "9999:9999/tcp"
+    restart: always
+
+  zookeeper:
+    container_name: zookeeper
+    image: wurstmeister/zookeeper:3.4.6
+    environment:
+      ZOO_MY_ID: {{ node }}
+      ZOO_SERVERS: "server.1={{ hostvars['kafka1'].ansible_host }}:2888:3888;2181 server.2={{ hostvars['kafka2'].ansible_host }}:2888:3888;2181 server.3={{ hostvars['kafka3'].ansible_host }}:2888:3888;2181"
+    ports:
+      - "2181:2181/tcp"
+      - "2888:2888/tcp"
+      - "3888:3888/tcp"
+    restart: always

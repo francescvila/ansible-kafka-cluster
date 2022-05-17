@@ -1,0 +1,12 @@
+# Environment
+env: vagrant
+
+# Python interpreter
+ansible_python_interpreter: /usr/bin/python3
+
+# Docker
+docker_ce_version: 5:20.10.7*
+
+# Common paths
+init_path: /root/init
+data_path: /srv/data

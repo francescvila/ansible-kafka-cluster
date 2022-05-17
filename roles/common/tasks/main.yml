@@ -1,0 +1,30 @@
+- name: Set timezone to Europe/Brussels
+  timezone:
+    name: Europe/Brussels
+
+- name: Pre-install list of packages
+  apt:
+    name: ['python3-apt','python3-pip','curl','vim','lsof','telnet','htop','logrotate']
+    state: present
+    update_cache: yes
+    
+- name: Pip force upgrade
+  pip: 
+    name: pip
+    extra_args: --upgrade
+
+# Create data directories and volumes
+
+- name: Create data volume directory
+  file:
+    path: "{{ data_path }}"
+    owner: root
+    group: root
+    state: directory
+    mode: '0755'
+
+# Docker dependencies
+- name: Install Docker dependencies
+  when: inventory_hostname in groups['docker']
+  include_tasks:
+    file: docker.yml

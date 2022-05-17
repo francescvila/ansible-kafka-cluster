@@ -1,0 +1,26 @@
+- name: Add Docker GPG key
+  apt_key: url=https://download.docker.com/linux/ubuntu/gpg
+
+- name: Add Docker APT repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
+    state: present
+    update_cache: yes
+
+- name: Install Docker
+  apt:
+    name: ['docker-ce={{docker_ce_version}}']
+    state: present
+    update_cache: yes
+    force: yes
+
+- name: Install Python Docker and Docker Compose modules
+  pip:
+    name:
+      - docker-compose
+
+- name: Create a symbolic link for docker-compose
+  file:
+    src: /usr/local/bin/docker-compose
+    dest: /usr/bin/docker-compose
+    state: link

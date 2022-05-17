@@ -1,0 +1,44 @@
+- name: Create data volume directory
+  file:
+    path: "{{ data_path }}"
+    owner: root
+    group: root
+    state: directory
+    mode: '0755'
+
+- name: Create Kafka volume directory
+  file:
+    path: "{{ data_path }}/kafka"
+    owner: root
+    group: root
+    state: directory
+    mode: '0755'
+
+- name: Create init directory
+  file:
+    path: "{{ init_path }}"
+    owner: root
+    group: root
+    state: directory
+    mode: '0755'
+
+- name: Generate docker-compose .env file
+  template:
+    src: "../templates/docker/.env.j2"
+    dest: "{{ init_path }}/.env"
+    owner: root
+    group: root
+    mode: '0644'
+    force: no
+  notify:
+    - Restart docker-compose
+
+- name: Docker-compose generation
+  template:
+    src: "../templates/docker/docker-compose.yml.j2"
+    dest: "{{ init_path }}/docker-compose.yml"
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart docker-compose

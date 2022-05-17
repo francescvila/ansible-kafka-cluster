@@ -1,0 +1,22 @@
+#
+# All servers
+#
+
+[all:children]
+kafka
+
+#
+# Servers
+#
+
+[kafka]
+kafka1 ansible_host=192.168.60.51 node=1
+kafka2 ansible_host=192.168.60.52 node=2
+kafka3 ansible_host=192.168.60.53 node=3
+
+#
+# Framework-specific
+#
+
+[docker:children]
+kafka
