@@ -12,16 +12,16 @@
 
 ## About The Project
 
-This is an ansible project for locally configuring and testing two master-backup proxys balancing over two web servers.
+This is an ansible project for locally configuring and testing a cluster three Kafka nodes.
 This project has been tested on Vagrant virtual machines using Debian GNU/Linux 10.x Buster/Stable Minimal Install (64 bit) as VM box image.
-It is perfectly valid for configuring two remote servers as master-backup servers, by changing the hosts IP addresses and creating an ansible user and granting access. It will also be necessary having a floating IP address (elastic or global).
-
+It is perfectly valid for configuring a cluster of three remote servers, by changing the hosts IP addresses and creating an ansible user and granting access.
 
 ### Built With
 
 Vagrant and VirtualBox are used to easily create local virtual machines.
 Ansible playbooks are used to manage configuration on the virtual machines.
 Jinja2 templating engine is used to customize remote configuration files.
+
 
 ## Getting Started
 
